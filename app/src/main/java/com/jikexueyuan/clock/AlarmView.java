@@ -80,6 +80,10 @@ public class AlarmView extends LinearLayout {
         public String toString() {
             return getTimeLabel();
         }
+
+        private int getId(){
+            return (int) (getTime() / 1000 / 60);
+        }
     }
 
     @Override
@@ -101,7 +105,7 @@ public class AlarmView extends LinearLayout {
         });
         lvAlarmList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {//长按删除闹钟
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long l) {
                 new AlertDialog.Builder(getContext())
                         .setTitle("操作选项")
                         .setItems(new CharSequence[]{"删除"}, new DialogInterface.OnClickListener() {
@@ -109,7 +113,7 @@ public class AlarmView extends LinearLayout {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 switch (i) {
                                     case 0:
-                                        deleteAlarm(i);
+                                        deleteAlarm(position);
                                         break;
                                     default:
                                         break;
@@ -125,9 +129,12 @@ public class AlarmView extends LinearLayout {
     /**
      * 删除闹钟
      */
-    private void deleteAlarm(int i) {
-        adapter.remove(adapter.getItem(i));
+    private void deleteAlarm(int position) {
+        AlarmData ad = adapter.getItem(position);
+        adapter.remove(ad);
         saveAlarmList();
+
+        alarmManager.cancel(PendingIntent.getBroadcast(getContext(), ad.getId(), new Intent(getContext(), AlarmReceiver.class), 0));
     }
 
     /**
@@ -142,16 +149,20 @@ public class AlarmView extends LinearLayout {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.HOUR_OF_DAY, i);
                 calendar.set(Calendar.MINUTE, i1);
+                calendar.set(Calendar.SECOND,0);//秒数清零
+                calendar.set(Calendar.MILLISECOND, 0);//毫秒清零
 
                 Calendar currentTime = Calendar.getInstance();
                 if (calendar.getTimeInMillis() <= currentTime.getTimeInMillis()) {//时间小于当前
                     calendar.setTimeInMillis(calendar.getTimeInMillis() + 24 * 60 * 60 * 1000L);//后推24小时
                 }
-                adapter.add(new AlarmData(calendar.getTimeInMillis()));
+
+                AlarmData ad = new AlarmData(calendar.getTimeInMillis());
+                adapter.add(ad);
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                        calendar.getTimeInMillis(),
+                        ad.getTime(),
                         5 * 60 * 1000L,
-                        PendingIntent.getBroadcast(getContext(), 0, new Intent(getContext(), AlarmReceiver.class), 0));
+                        PendingIntent.getBroadcast(getContext(), ad.getId(), new Intent(getContext(), AlarmReceiver.class), 0));
                 saveAlarmList();//保存闹钟数据
             }
         }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show();
@@ -166,9 +177,10 @@ public class AlarmView extends LinearLayout {
         for (int i = 0; i < adapter.getCount(); i++) {
             sb.append(adapter.getItem(i).getTime()).append(",");
         }
-
-        String content = sb.toString().substring(0, sb.length() - 1);//去掉最后面的逗号
-        editor.putString(KEY_ALARM_LIST, content);
+        if (sb.length() > 1) {
+            String content = sb.toString().substring(0, sb.length() - 1);//去掉最后面的逗号
+            editor.putString(KEY_ALARM_LIST, content);
+        }
         editor.apply();
     }
 
