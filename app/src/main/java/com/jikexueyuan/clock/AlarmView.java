@@ -1,5 +1,6 @@
 package com.jikexueyuan.clock;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TimePicker;
 
 import java.util.Calendar;
 
@@ -37,15 +39,20 @@ public class AlarmView extends LinearLayout {
         public AlarmData(long time) {
             this.time = time;
 
-            c = Calendar.getInstance();
-            timeLabel = c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE);
+            date = Calendar.getInstance();
+            date.setTimeInMillis(time);
 
-            Log.d("TAG", "" + c.get(Calendar.MINUTE));
+            timeLabel = String.format("%d月%d日 %d:%d",
+                    date.get(Calendar.MONTH) + 1,
+                    date.get(Calendar.DAY_OF_MONTH),
+                    date.get(Calendar.HOUR_OF_DAY),
+                    date.get(Calendar.MINUTE));
+//            timeLabel = date.get(Calendar.DAY_OF_MONTH) + ":" + date.get(Calendar.HOUR_OF_DAY) + ":" + date.get(Calendar.MINUTE);
         }
 
         private long time = 0;//闹钟响起的时间
         private String timeLabel = "";
-        private Calendar c;
+        private Calendar date;
 
         public long getTime() {
             return time;
@@ -83,7 +90,27 @@ public class AlarmView extends LinearLayout {
 
     private void addAlarm() {
         // TODO: 2016/8/11
+        Calendar c = Calendar.getInstance();
+
+        new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, i);
+                calendar.set(Calendar.MINUTE, i1);
+
+                Calendar currentTime = Calendar.getInstance();
+                if (calendar.getTimeInMillis() <= currentTime.getTimeInMillis()) {//时间小于当前
+                    Log.d("TAG", calendar.getTimeInMillis() + "");
+                    calendar.setTimeInMillis(calendar.getTimeInMillis() + 24 * 60 * 60 * 1000L);//后推24小时
+                    Log.d("TAG", calendar.getTimeInMillis() + "");
+                }
+                Log.d("TAG", calendar.getTimeInMillis() + "");
+                adapter.add(new AlarmData(calendar.getTimeInMillis()));
+                Log.d("TAG", calendar.getTimeInMillis() + "");
+            }
+
+
+        }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show();
     }
-
-
 }
