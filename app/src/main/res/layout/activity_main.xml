@@ -42,13 +42,24 @@
 
                 </com.jikexueyuan.clock.TimeView>
 
-                <LinearLayout
+                <com.jikexueyuan.clock.AlarmView
                     android:id="@+id/id_tab_alarm"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                </LinearLayout>
+                    <ListView
+                        android:id="@+id/id_lv_alarm"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+                    </ListView>
+                    <Button
+                        android:id="@+id/id_btn_addAlarm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/addAlarm"/>
+                </com.jikexueyuan.clock.AlarmView>
 
                 <LinearLayout
                     android:id="@+id/id_tab_timer"
