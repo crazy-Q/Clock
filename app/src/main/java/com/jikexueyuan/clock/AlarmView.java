@@ -45,7 +45,7 @@ public class AlarmView extends LinearLayout {
         init();
     }
 
-    private void init(){
+    private void init() {
         alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
     }
 
@@ -125,7 +125,7 @@ public class AlarmView extends LinearLayout {
     /**
      * 删除闹钟
      */
-    private void deleteAlarm(int i){
+    private void deleteAlarm(int i) {
         adapter.remove(adapter.getItem(i));
         saveAlarmList();
     }
@@ -151,7 +151,7 @@ public class AlarmView extends LinearLayout {
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
                         calendar.getTimeInMillis(),
                         5 * 60 * 1000L,
-                        PendingIntent.getBroadcast(getContext(), 0, new Intent(getContext(), AlarmReceiver.class),0));
+                        PendingIntent.getBroadcast(getContext(), 0, new Intent(getContext(), AlarmReceiver.class), 0));
                 saveAlarmList();//保存闹钟数据
             }
         }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show();
@@ -162,7 +162,7 @@ public class AlarmView extends LinearLayout {
      */
     private void saveAlarmList() {
         SharedPreferences.Editor editor = getContext().getSharedPreferences(AlarmView.class.getName(), Context.MODE_PRIVATE).edit();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < adapter.getCount(); i++) {
             sb.append(adapter.getItem(i).getTime()).append(",");
         }
