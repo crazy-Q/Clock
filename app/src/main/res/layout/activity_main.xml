@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:id="@+id/container"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TabHost
+        android:id="@+id/tabHost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/tabHost"
         android:layout_gravity="left|top">
 
         <LinearLayout
@@ -27,13 +27,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <LinearLayout
+                <com.jikexueyuan.clock.TimeView
                     android:id="@+id/id_tab_time"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                </LinearLayout>
+                    <TextView
+                        android:id="@+id/id_tv_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                </com.jikexueyuan.clock.TimeView>
 
                 <LinearLayout
                     android:id="@+id/id_tab_alarm"
