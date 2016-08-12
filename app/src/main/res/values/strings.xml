@@ -7,4 +7,6 @@
     <string name="reset">重置</string>
     <string name="pause">暂停</string>
     <string name="next">继续</string>
+    <string name="point">.</string>
+    <string name="lap">计时</string>
 </resources>
