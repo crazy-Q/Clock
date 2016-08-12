@@ -18,7 +18,6 @@
         </activity>
         <receiver android:name=".AlarmReceiver" />
         <activity android:name=".PlayAlarmAty">
-
         </activity>
 
     </application>
